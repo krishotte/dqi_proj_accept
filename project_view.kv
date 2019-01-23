@@ -1,0 +1,91 @@
+#:kivy 1.10.1
+#main view for project overview displaying 
+<Item1>:
+    orientation: 'horizontal'
+    text1: 'bcf'
+    state1: False
+    state2: 'normal'
+    Label:
+        size_hint_x: 0.5
+        text: root.text1
+    CheckBox:
+        size_hint_x: 0.25
+        active: root.state1
+        on_state: root.on_state(self.active)
+    ToggleButton:
+        size_hint_x: 0.25
+        text: 'OK'
+        state: root.state2
+        on_press: root.on_state2(self.state)
+        
+<RV>:
+    id: _RV
+    viewclass: 'Item1'
+    RecycleBoxLayout:
+        default_size: None, sp(24)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+<ItemBasicNA>:
+    orientation: 'horizontal'
+    id1: ''
+    name1: ''
+    canvas.after: 
+        Color:
+            rgba: 0.4, 0.4, 0.4, 1
+        Line:
+            width: 1
+            #rectangle: (self.x, self.y, self.width, self.height)
+            points: (self.x, self.y, self.x + self.width, self.y) 
+    Label:
+        id: _id
+        size_hint_x: 0.2
+        text: root.id1 #'0'
+    Label:
+        id: _name
+        size_hint_x: 0.6
+        text_size: self.size
+        halign: 'left'
+        valign: 'middle'
+        text: root.name1 #'name'
+    Label:
+        id: _status
+        size_hint_x: 0.1
+        text: 'N/A'
+    Label:
+        id: _note
+        size_hint_x: 0.1
+        text: 'no'
+
+<ItemSectionTitle>:
+    orientation: 'horizontal'
+    id1: ''
+    name1: ''
+    canvas.before: 
+        Color:
+            rgba: 0.102, 0.282, 0.412, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size 
+    Label:
+        id: _id
+        size_hint_x: 0.2
+        text: root.id1 #'0'
+    Label:
+        id: _name
+        size_hint_x: 0.8
+        text_size: self.size
+        halign: 'left'
+        valign: 'middle'
+        text: root.name1 #'name'
+        
+<ProjectRecycleView>:
+    viewclass: 'ItemBasicNA'
+    RecycleBoxLayout:
+        default_size: None, sp(48)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'

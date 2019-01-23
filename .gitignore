@@ -1,0 +1,5 @@
+#ignore all txt files
+*.txt
+__pycache__/
+.idea/
+input/
