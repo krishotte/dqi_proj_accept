@@ -10,10 +10,15 @@ with open(template_file, encoding='utf-8') as f:
 
 lines = template_all.split('\n')
 
+darkred = [118/255, 22/255, 22/255, 1]
+darkgreen = [ 32/255, 64/255, 16/255, 1]
+black = [0, 0, 0, 1]
+
 
 def get_data():
     loaded_data = []
     id_p = re.compile('[0-9]\.{0,1}[0-9]{0,2}\.{0,1}[0-9]{0,2}\.{0,1}')
+    i = 0
     for line in lines:
         # print(line)
         id_m = id_p.search(line)
@@ -34,10 +39,8 @@ def get_data():
             print('flags none')
             flags = None
 
-        '''
-        TODO:
-            vcls selection based on flags, not id1 length        
-        '''
+        # TODO: vcls selection based on flags, not id1 length
+
         if len(id1) < 6:
             vcls = 'ItemSectionTitle'
         else:
@@ -46,7 +49,10 @@ def get_data():
             'id1': id1,
             'name1': name2,
             'flag1': flags,
-            'viewclass': vcls  # 'Item3'
+            'viewclass': vcls,  # 'Item3'
+            'status_color': black,
+            'status': '--',
+            'note': '--',
         }
         loaded_data.append(single_data)
     return loaded_data

@@ -1,2 +1,47 @@
 #:kivy 1.10.1
-#main view for single item editing 
+#main view for single item editing
+
+<ViewItem>:
+    orientation: 'vertical'
+    notes: _notes
+    tbtn: _tbtn
+    BoxLayout:
+        id: _item
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        Label:
+            id: _item_id
+            text: root.id1
+            size_hint_x: 0.2
+        Label:
+            id: _item_name
+            text: root.name1  # 'Item name'
+            size_hint_x: 0.6
+        Button:
+            text: 'Confirm'
+            size_hint_x: 0.1
+            on_release: root.confirm()
+        Button:
+            text: 'Cancel'
+            size_hint_x: 0.1
+            on_release: root.cancel()
+    BoxLayout:
+        id: _status
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        ToggleButton:
+            id: _tbtn
+            text: 'OK'
+            group: '_group'
+        ToggleButton
+            text: 'NOK'
+            group: '_group'
+        ToggleButton
+            text: 'N/A'
+            group: '_group'
+    TextInput:
+        id: _notes
+        size_hint_y: 0.3
+    Label:
+        text: ''
+        size_hint_y: 0.5
