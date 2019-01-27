@@ -4,14 +4,11 @@ from os import path
 from kivy.app import App
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import StringProperty, BooleanProperty, ObjectProperty, ListProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
-# from kivy.uix.behaviors import FocusBehavior
-# from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 import load_template
 from kivy.uix.recycleview.views import RecycleDataAdapter
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.graphics import Color
 
 files = ['project_view.kv', 'item_view.kv']
 for file in files:
@@ -29,6 +26,9 @@ print('color definition: ', color_picker)
 
 
 class ItemBasicNA(RecycleDataViewBehavior, BoxLayout):
+    """
+    standard editable item class
+    """
     status_color = ListProperty()
     name1 = StringProperty()
     id1 = StringProperty()
@@ -46,11 +46,14 @@ class ItemBasicNA(RecycleDataViewBehavior, BoxLayout):
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             print('touched item, index: ', self.index)
-            a1.main_container.display_item_view(self.index)
+            a1.main_container.display_view_item(self.index)
         # TODO: propagate touch
 
 
 class ItemSectionTitle(RecycleDataViewBehavior, BoxLayout):
+    """
+    standard section title item class
+    """
     background_color = ListProperty()
     name1 = StringProperty()
     id1 = StringProperty()
@@ -67,6 +70,11 @@ class ViewItem(BoxLayout):
     name1 = StringProperty()
 
     def __init__(self, data_item, index):
+        '''
+        widget for item editing
+        :param data_item: RecycleView.data[index] dictionary
+        :param index: index to generate view
+        '''
         super().__init__()
         self.id1 = data_item['id1']
         self.name1 = data_item['name1']
@@ -83,10 +91,16 @@ class ViewItem(BoxLayout):
         for each in _toggle_buttons:
             if each.text == self.status:
                 each.state = 'down'
+            else:
+                each.state = 'normal'
 
         self.data_index = index
 
     def confirm(self):
+        '''
+        collects item data and calls RecycleView data update
+        :return:
+        '''
         print('Confirm button pressed')
         print('notes: ', self.notes.text)
         _toggle_buttons = self.tbtn.get_widgets('_group')
@@ -106,7 +120,7 @@ class ViewItem(BoxLayout):
         _output_dict = dict(status=_pressed_button, notes=self.notes.text, status_color=color_picker[_pressed_button],
                             note=_note)
         print('output_dict: ', _output_dict)
-        a1.main_container.project_recycle_view.update_data(self.data_index, _output_dict)
+        a1.main_container.project_container.project_recycle_view.update_data(self.data_index, _output_dict)
         a1.main_container.display_project_recycle_view()
 
     def cancel(self):
@@ -164,7 +178,7 @@ class MyRDA(RecycleDataAdapter):
 class ProjectRecycleView(RecycleView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        'overrides default DataAdapter used by RecycleView'
+        # overrides default DataAdapter used by RecycleView
         self.view_adapter = MyRDA()
         '''
         self.data = {}
@@ -176,30 +190,49 @@ class ProjectRecycleView(RecycleView):
         self.data = load_template.get_data()
 
     def update_data(self, data_index, update_data):
+        '''
+        updates data and refreshes view
+        :param data_index: index to update
+        :param update_data: dictionary to update self.data[index]
+        :return:
+        '''
         print('project recycle view, updating data...')
         _data = self.data
-        # self.data[data_index].update(update_data)
-        _data[data_index].update(update_data)
-        self.data = _data
+        self.data[data_index].update(update_data)
         print('updated index: ', data_index, ' data_item: ', self.data[data_index])
         self.refresh_from_data()
 
 
-class MainContainer(RelativeLayout):
+class ProjectContainer(BoxLayout):
+    '''
+    container holding project labels, controls and ProjectRecycleView
+    '''
+    proj_name = StringProperty()
+
     def __init__(self):
         super().__init__()
         self.project_recycle_view = ProjectRecycleView()
-        # self.item_view = ViewItem()
         self.add_widget(self.project_recycle_view)
+        self.proj_name = 'Sample project'
 
-    def display_item_view(self, index):
-        self.remove_widget(self.project_recycle_view)
-        self._view_item = ViewItem(a1.main_container.project_recycle_view.data[index], index)
+
+class MainContainer(RelativeLayout):
+    def __init__(self):
+        '''
+        container widget holding all subwidgets
+        '''
+        super().__init__()
+        self.project_container = ProjectContainer()
+        self.add_widget(self.project_container)
+
+    def display_view_item(self, index):
+        self.remove_widget(self.project_container)
+        self._view_item = ViewItem(a1.main_container.project_container.project_recycle_view.data[index], index)
         self.add_widget(self._view_item)
 
     def display_project_recycle_view(self):
         self.remove_widget(self._view_item)
-        self.add_widget(self.project_recycle_view)
+        self.add_widget(self.project_container)
 
 
 class TestApp(App):

@@ -67,3 +67,16 @@
         size_hint_y: None
         height: self.minimum_height
         orientation: 'vertical'
+
+<ProjectContainer>:
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        Label:
+            id: _proj_name
+            text: root.proj_name
+            size_hint_x: 0.9
+        Button:
+            text: 'Save'
+            size_hint_x: 0.1

@@ -18,7 +18,6 @@ black = [0, 0, 0, 1]
 def get_data():
     loaded_data = []
     id_p = re.compile('[0-9]\.{0,1}[0-9]{0,2}\.{0,1}[0-9]{0,2}\.{0,1}')
-    i = 0
     for line in lines:
         # print(line)
         id_m = id_p.search(line)
@@ -45,6 +44,7 @@ def get_data():
             vcls = 'ItemSectionTitle'
         else:
             vcls = 'ItemBasicNA'
+
         single_data = {
             'id1': id1,
             'name1': name2,
