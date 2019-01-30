@@ -26,16 +26,16 @@ def get_data():
         except AttributeError:
             id1 = 'not found'
         
-        print('id found: ', id1)
+        # print('id found: ', id1)
         name1 = line.split(':')[0]
         name2 = name1[len(id1)+1:len(name1)]
-        print('name: ', name2)
+        # print('name: ', name2)
         try:
             flags = line.split(':')[1]
-            print('flags: ', flags)
+            # print('flags: ', flags)
             flags = 1
         except IndexError:
-            print('flags none')
+            # print('flags none')
             flags = None
 
         # TODO: vcls selection based on flags, not id1 length

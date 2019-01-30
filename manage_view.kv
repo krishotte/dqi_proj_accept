@@ -1,0 +1,66 @@
+#:kivy 1.10.1
+#view for managing projects in app
+<ProjectManager>:
+    orientation: 'vertical'
+    BoxLayout:
+        id: _controls
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        Button:
+            text: 'Create'
+            on_release: root.open_popup()
+        Button:
+            text: 'Load'
+            on_release: root.load()
+        Button:
+            text: 'Delete'
+    #BoxLayout:
+    #    orientation: 'vertical'
+    #    size_hint_y: 0.9
+    #    ManageRecycleView:
+
+<ManageRecycleView>:
+    viewclass: 'SelectableLabel'
+    size_hint_y: 0.9
+    #RecycleBoxLayout:
+    SelectableRecycleBoxLayout:
+        default_size: None, sp(48)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        multiselect: False  # True
+        touch_multiselect: False  # True
+
+<SelectableLabel>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: (0.102, 0.282, 0.412, 1) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<CreateProjectPopup>:
+    title: 'Project name'
+    auto_dismiss: False
+    new_project_name: _input
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: _input
+            # text: root.new_project_name
+            multiline: False
+            size_hint_y: 0.1
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            Button:
+                text: 'OK'
+                on_release: root._enter()
+            Button:
+                text: 'Cancel'
+                on_release: root._cancel()
+        Label:
+            size_hint_y: 0.8
+        

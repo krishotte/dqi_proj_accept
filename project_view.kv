@@ -76,7 +76,12 @@
         Label:
             id: _proj_name
             text: root.proj_name
-            size_hint_x: 0.9
+            size_hint_x: 0.8
         Button:
             text: 'Save'
             size_hint_x: 0.1
+            on_release: root.save()
+        Button:
+            text: 'Close'
+            size_hint_x: 0.1
+            on_release: root.close()
