@@ -1,7 +1,7 @@
 from os import path
 import re
 
-
+"""
 template_file = path.join(path.join(path.split(path.realpath(__file__))[0], 'input'), 'protokol2b.txt')
 print('template file: ', template_file)
 
@@ -9,13 +9,32 @@ with open(template_file, encoding='utf-8') as f:
     template_all = f.read()
 
 lines = template_all.split('\n')
+"""
 
 darkred = [118/255, 22/255, 22/255, 1]
 darkgreen = [ 32/255, 64/255, 16/255, 1]
 black = [0, 0, 0, 1]
 
 
-def get_data():
+def load_data(file):
+    """
+    loads data from template file into separate lines
+    :param file: whole path to file
+    :return: list of lines
+    """
+    with open(file, encoding='utf-8') as f:
+        template_all = f.read()
+
+    lines = template_all.split('\n')
+    return lines
+
+
+def get_data(lines):
+    """
+    separates data from lines strings
+    :param lines: strings to separate
+    :return: list of dictionaries - params
+    """
     loaded_data = []
     id_p = re.compile('[0-9]\.{0,1}[0-9]{0,2}\.{0,1}[0-9]{0,2}\.{0,1}')
     for line in lines:
@@ -59,6 +78,8 @@ def get_data():
 
 
 if __name__ == '__main__':
-    data = get_data()
+    template_file = path.join(path.join(path.split(path.realpath(__file__))[0], 'input'), 'protokol2b.txt')
+    lines = load_data(template_file)
+    data = get_data(lines)
     for each in data:
         print(each)

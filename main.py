@@ -1,6 +1,6 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
-from os import path, listdir
+from os import path, listdir, mkdir
 from kivy.app import App
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -25,10 +25,14 @@ for file in files:
 
 paleblue = [0.102, 0.282, 0.412, 1]
 darkred = [118/255, 22/255, 22/255, 1]
-darkgreen = [ 32/255, 64/255, 16/255, 1]
+darkgreen = [32/255, 64/255, 16/255, 1]
 black = [0, 0, 0, 1]
 color_picker = {'OK': darkgreen, 'NOK': darkred, 'N/A': black, 'None': black}
 print('color definition: ', color_picker)
+
+# TODO: add app ini file:
+#       - internal/external template file - OK
+#       - data, export folder
 
 
 class ItemBasicNA(RecycleDataViewBehavior, BoxLayout):
@@ -188,12 +192,23 @@ class ProjectRecycleView(RecycleView):
     """
     displays single project all items
     TODO: add items to the end of the list - by button
+    TODO: add section for issues on our side with dynamic add item functionality
     """
-    def __init__(self, **kwargs):
+    def __init__(self, configuration, **kwargs):
         super().__init__(**kwargs)
         # overrides default DataAdapter used by RecycleView
         self.view_adapter = MyRDA()
-        self.template_data1 = load_template.get_data()
+
+        if configuration['internal_template'] is True:
+            print('loading internal template')
+            self.template_file = path.join(path.join(path.dirname(path.realpath(__file__)), 'input'), 'protokol2b.txt')
+        else:
+            self.template_file = configuration['external_template_path']
+        print('using template: ', self.template_file)
+
+        lines = load_template.load_data(self.template_file)
+        self.template_data1 = load_template.get_data(lines)
+
         # need to do a deepcopy, otherwise self.template_data1 will be overwritten
         self.data = copy.deepcopy(self.template_data1)
 
@@ -231,12 +246,12 @@ class ProjectContainer(BoxLayout):
     proj_name = StringProperty()
     proj_file = StringProperty()
 
-    def __init__(self, data_dir):
+    def __init__(self, configuration):
         super().__init__()
-        self.project_recycle_view = ProjectRecycleView()
+        self.project_recycle_view = ProjectRecycleView(configuration)
         self.add_widget(self.project_recycle_view)
         self.proj_name = ''  # ''Sample project'
-        self.data_dir = data_dir
+        self.data_dir = configuration['data_dir']
         self.ini = Ini2()
         # self.load_newest_file()
 
@@ -327,6 +342,7 @@ class ManageRecycleView(RecycleView):
 class ProjectManager(BoxLayout):
     """
     container holding project management view
+    TODO: delete project - move to config_dir/trash
     """
     def __init__(self, data_dir):
         super().__init__()
@@ -366,6 +382,7 @@ class ProjectManager(BoxLayout):
 class CreateProjectPopup(Popup):
     """
     popup window for project name creation
+    TODO: error on wrong file name
     """
     new_project_name = ObjectProperty()
 
@@ -433,13 +450,21 @@ class MainContainer(RelativeLayout):
     """
     holds all app widgets
     """
-    def __init__(self, data_dir):
+    def __init__(self, config_dir):
         '''
         container widget holding all subwidgets
         '''
         super().__init__()
-        self.project_container = ProjectContainer(data_dir)
-        self.project_manager = ProjectManager(data_dir)
+        self.data_dir = path.join(config_dir, 'data')
+        self.configuration = self.read_config_file(config_dir)
+        self.configuration['config_dir'] = config_dir
+        self.configuration['data_dir'] = self.data_dir
+
+        if not path.isdir(self.data_dir):
+            print('directory does not exist, creating')
+            mkdir(self.data_dir)
+        self.project_container = ProjectContainer(self.configuration)
+        self.project_manager = ProjectManager(self.data_dir)
         # self.add_widget(self.project_container)
         self.add_widget(self.project_manager)
 
@@ -461,10 +486,20 @@ class MainContainer(RelativeLayout):
         self.remove_widget(self.project_container)
         self.add_widget(self.project_manager)
 
+    def read_config_file(self, config_dir):
+        ini_cls = Ini2()
+        configuration = ini_cls.read(path.join(config_dir, 'conf.json'))
+        print('read configuration: ', configuration)
+        return configuration
+
 
 class Dqi_Proj_Accept(App):
-    def build(self):
+    def __init__(self):
+        super().__init__()
         self.main_container = MainContainer(self.user_data_dir)
+
+    def build(self):
+        # self.main_container = MainContainer(self.user_data_dir)
         return self.main_container
 
 
