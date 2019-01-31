@@ -1,0 +1,105 @@
+﻿2 Detaily prebierky
+2.1. Stav zariadenia
+2.1.1. Manuálny chod zariadenia: OK   /   NOK
+2.1.2. Bezpečnosť pohybov v manuálnom chode zariadenia: OK   /   NOK
+2.1.3. Reset zariadenia: OK   /   NOK
+2.1.4. Automatické vyprázdnenie zariadenia: OK   /   NOK
+2.1.5. Bezpečnostné funkcie zariadenia: OK   /   NOK
+2.1.6. Automatický chod zariadenia bez DQI SW (Davisu): OK   /   NOK
+2.1.7. Cyklový čas zariadenia (vrátane/bez merania): ......s; OK   /   NOK
+2.2. Základné požiadavky zadania
+2.2.1. Orientácia dielu: OK   /   NOK
+2.2.2. Umiestnenie DMX kamery: OK   /   NOK   /   NA
+2.2.3. Umiestnenie RFID čítačky: OK   /   NOK   /   NA
+2.2.4. Rozoznávanie typu produktu: OK   /   NOK   /   NA
+2.2.5. Umiestnenie označovania produktov (razenie): OK   /   NOK
+2.2.6. Povrchová úprava častí stroja: OK   /   NOK
+2.3. Mechanika
+2.3.1. Prechod produktov zariadením: OK   /   NOK
+2.3.2. Uchopovanie produktov chápadlom: OK   /   NOK
+2.3.3. Plynulé dorazy pneupohybov: OK   /   NOK
+2.3.4. Ustavovanie produktov: OK   /   NOK
+2.3.5. Nastavenie SOPA: OK   /   NOK
+2.3.6. Chod servopohonov: OK   /   NOK
+2.3.7. Vibrácie zariadenia počas automatického chodu: OK   /   NOK
+2.3.8. Stav utiahnutia skrutkových spojov: OK   /   NOK
+2.3.9. Nastavenie koncových snímačov sond: OK   /   NOK
+2.3.10. Nastavenie polohy sond: OK   /   NOK
+2.3.11. Plynulosť pohybu sond: OK   /   NOK
+2.3.12. Zoradenie laserových snímačov (OMS – kontrola na bodkovanej hlave): OK   /   NOK
+2.3.13. Umiestnenie referenčných snímačov (OMS - napr. triggrovací snímač): OK   /   NOK
+2.3.14. Zoradenie valcov dopravníkov – plynulosť/rovnomernosť presunu produktov: OK / NOK
+2.3.15. Umiestnenie a funkcia snímačov prítomnosti produktov na dopravníkoch: OK   /   NOK
+2.3.16. Razenie/značkovanie produktov – funkčnosť/bezproblémový chod: OK   /   NOK[MB1]
+2.3.17. Opotrebovateľné diely – vymeniteľnosť/dokumentácia: OK   /   NOK
+2.3.18. Rozoberateľnosť zariadenia a vzájomné väzbenie podzostáv: OK   /   NOK
+2.3.19. Bezpečnosť – krytie pohyblivých častí: OK   /   NOK
+2.3.20. Mazanie pohyblivých častí: OK   /   NOK
+2.4. Pneumatika
+2.4.1. Pneumatické okruhy v súlade s dizajn dokumentom: OK   /   NOK
+2.4.2. Označenie pneumatických okruhov: OK   /   NOK
+2.4.3. Ovládanie pneumatických okruhov z HMI: OK   /   NOK
+2.4.4. Rýchlosť pneupohybov: OK   /   NOK
+2.5. Elektrika
+2.5.1. Rozvádzač (Komponenty + označenie): OK   /   NOK[MB2]
+2.5.2. Označenie vodičov (zariadenie): OK   /   NOK
+2.5.3. Označenie komponentov (zariadenie): OK   /   NOK
+2.5.4. Káblové žľaby, pripojovacie a iné skrine (Vyhotovenie): OK   /   NOK
+2.5.5. Meracie senzory / sondy (Umiestenie a označenie): OK   /   [MB3]NOK
+2.5.6. Pohony: OK   /   NOK
+2.5.7. Bezpečnostné obvody: OK   /   NOK
+2.5.8. Chladenie: OK   /   NOK
+2.5.9. UPS: OK   /   NOK 
+2.5.10. Osvetlenie: OK   /   NOK
+2.6. Ovládacie prvky zariadenia a signalizácia [MB4]
+2.6.1. Jazyk(y) HMI: OK   /   NOK
+2.6.2. Chybové hlášky HMI: OK   /   NOK
+2.6.3. Varovné hlášky HMI: OK   /   NOK
+2.6.4. Varovné hlášky na stroji (nálepky a pod.): OK   /   NOK
+2.6.5. Maják: OK   /   NOK
+2.6.6. Tlačidlá na hlavnom paneli - funkcia: OK   /   NOK
+2.6.7. Total stop funkcia: OK   /   NOK
+2.6.8. Farebné označenie ovládacích prvkov: OK   /   NOK
+2.6.9. Režim všetky kusy na OK dopravník: OK   /   NOK
+2.6.10. Režim všetky kusy na NOK dopravník: OK   /   NOK
+2.6.11. Obrazovky HMI: OK   /   NOK
+2.6.12. Špeciálne nastavania chránené heslom: OK   /   NOK
+2.6.13. Bypass režim: OK   /   NOK
+2.7. NOK pracovisko
+2.7.1. Osvetlenie: OK   /   NOK
+2.7.2. Funkčnosť NOK pracoviska: OK   /   NOK   /   NA
+2.7.3. Umiestnenie ovládacích prvkov: OK   /   NOK
+2.7.4. DMX čítačka: OK   /   NOK
+2.8. Testy – bez DQI SW (Davis)
+2.8.1. Dry test: počet hodín/počet chýb: ....h/....chýb; OK/NOK
+2.8.2. Automatický cyklus s produktmi: počet hodín/počet chýb: ....h/....chýb; OK/NOK
+2.9. Komunikácie PLC – DQI SW (Davis)
+2.9.1. Zasielanie správneho EtalonNumber: OK   /   NOK
+2.9.2. Správna logika vyžadovania master pieces: OK   /   NOK
+2.9.3. Zasielanie správneho BumperCode (typu produktu): OK   /   NOK
+2.9.4. Zasielanie vstupného tlaku/ov: OK   /   NOK
+2.9.5. Zasielanie hodnôt z teplotných snímačov (štandardne 4ks): OK   /   NOK
+2.9.6. Zasielanie správneho DMX: OK   /   NOK
+2.9.7. Riadiaca komunikácia automatického cyklu (ready, trigger, result, done): OK   /   NOK
+2.9.8. Zasielanie analógových hodnôt zo snímačov LTP, Keyence a pod.: OK   /   NOK
+2.9.9. Noris údaje (v prípade Nemak projektov): OK   /   NOK
+2.9.10. Zasielanie správnych SOPA hodnôt: OK   /   NOK
+2.9.11. LTP statusy: OK   /   NOK
+2.9.12. PLC Live signál automat/manual: OK   /   NOK
+2.9.13. Stop automatu pri zhodení signálu Davis Live a vyprázdnenie stroja: OK   /   NOK
+2.9.14. Automatický chod zariadenia s DQI SW (Davis): OK / NOK
+2.9.15. Správnosť triedenia produktov: OK / NOK
+2.9.16. Správnosť označovania produktov: OK / NOK
+2.10. Technická dokumentácia
+2.10.1. Analýza rizík: OK   /   NOK
+2.10.2. Elektrická schéma: OK   /   NOK
+2.10.3. Layout: OK   /   NOK
+2.10.4. Náhradne diely: OK   /   NOK
+2.10.5. Výkresy náhradných dielov: OK   /   NOK
+2.10.6. Pneumatická schéma: NOK/OK
+2.10.7. Prevádzkový návod: OK   /   NOK
+2.10.8. 3D model: OK   /   NOK
+2.10.9. PLC program: OK   /   NOK
+2.11. Testy
+2.11.1. Automatický cyklus s produktmi a s DQI funkčnými celkami: počet hodín/počet chýb: .........h/.........chýb; OK   /   NOK
+2.12. Iné

@@ -187,6 +187,7 @@ class MyRDA(RecycleDataAdapter):
 class ProjectRecycleView(RecycleView):
     """
     displays single project all items
+    TODO: add items to the end of the list - by button
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
