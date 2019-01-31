@@ -70,6 +70,9 @@ class ItemSectionTitle(RecycleDataViewBehavior, BoxLayout):
 
 
 class ViewItem(BoxLayout):
+    """
+    widget for single item editing
+    """
     notes = ObjectProperty()
     tbtn = ObjectProperty()
     id1 = StringProperty()
@@ -182,6 +185,9 @@ class MyRDA(RecycleDataAdapter):
 
 
 class ProjectRecycleView(RecycleView):
+    """
+    displays single project all items
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # overrides default DataAdapter used by RecycleView
@@ -210,10 +216,11 @@ class ProjectRecycleView(RecycleView):
 
     def reset_all_data(self):
         print('resetting all data...')
-        self.data = copy.deepcopy(self.template_data1)  # load_template.get_data()  # TODO: self.template_data overwritten
+        # avoids self.template_data overwriting later during the app run
+        self.data = copy.deepcopy(self.template_data1)  # load_template.get_data()
         # not needed: self.refresh_from_data()
-        for i in range(8):
-            print('   index: ', i, 'status: ', self.data[i]['status'], ' template: ', self.template_data1[i]['status'])
+        # for i in range(8):
+        #     print('   index: ', i, 'status: ', self.data[i]['status'], ' template: ', self.template_data1[i]['status'])
 
 
 class ProjectContainer(BoxLayout):
@@ -221,15 +228,16 @@ class ProjectContainer(BoxLayout):
     container holding project labels, controls and ProjectRecycleView
     '''
     proj_name = StringProperty()
+    proj_file = StringProperty()
 
     def __init__(self, data_dir):
         super().__init__()
         self.project_recycle_view = ProjectRecycleView()
         self.add_widget(self.project_recycle_view)
-        self.proj_name = 'Sample project'
+        self.proj_name = ''  # ''Sample project'
         self.data_dir = data_dir
         self.ini = Ini2()
-        self.load_newest_file()
+        # self.load_newest_file()
 
     def save(self):
         """
@@ -244,6 +252,7 @@ class ProjectContainer(BoxLayout):
         filename = self.proj_name + '_' + suffix + '.json'
         print('filename used: ', filename)
         self.ini.write(path.join(self.data_dir, filename), self.project_recycle_view.data)
+        self.proj_file = filename
 
     def _check_saved_files(self):
         """
@@ -272,6 +281,7 @@ class ProjectContainer(BoxLayout):
         data = self.ini.read(path.join(self.data_dir, self.last_file))
         # print('loaded data: ', data)
         self.project_recycle_view.data = data
+        self.proj_file = self.last_file
 
     def set_proj_name(self, project_name):
         self.proj_name = project_name
@@ -284,6 +294,10 @@ class ProjectContainer(BoxLayout):
 
 
 class ManageRecycleView(RecycleView):
+    """
+    project management recycle view, allows creation
+    and loading saved projects
+    """
     def __init__(self, data_dir, **kwargs):
         super().__init__(**kwargs)
         self.data_dir = data_dir
@@ -340,7 +354,6 @@ class ProjectManager(BoxLayout):
             print('project created')
             a1.main_container.project_manager.manage_recycle_view.add_project(new_name)
             a1.main_container.project_container.set_proj_name(new_name)
-            # TODO: heisenbug reset_project_view() overwrites self.template_data, do not know where
             a1.main_container.project_container.reset_project_view()
             a1.main_container.open_project_recycle_view()
             return True
@@ -350,6 +363,9 @@ class ProjectManager(BoxLayout):
 
 
 class CreateProjectPopup(Popup):
+    """
+    popup window for project name creation
+    """
     new_project_name = ObjectProperty()
 
     def _enter(self):
@@ -367,14 +383,20 @@ class CreateProjectPopup(Popup):
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
-    ''' Adds selection and focus behaviour to the view. '''
+    """
+    Layout for selecting a project for further operation
+    Adds selection and focus behaviour to the view.
+    """
     def apply_selection(self, index, view, is_selected):
         print('selected nodes: ', self.selected_nodes)
         return super().apply_selection(index, view, is_selected)
 
 
 class SelectableLabel(RecycleDataViewBehavior, Label):
-    ''' Add selection support to the Label '''
+    """
+    selectable item in SelectableRecycleBoxLayout
+    Add selection support to the Label
+    """
     index = None
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
@@ -407,6 +429,9 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 
 
 class MainContainer(RelativeLayout):
+    """
+    holds all app widgets
+    """
     def __init__(self, data_dir):
         '''
         container widget holding all subwidgets

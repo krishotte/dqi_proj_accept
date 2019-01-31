@@ -73,10 +73,16 @@
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: 0.1
-        Label:
-            id: _proj_name
-            text: root.proj_name
+        BoxLayout:
+            orientation: 'vertical'
             size_hint_x: 0.8
+            Label:
+                id: _proj_name
+                text: root.proj_name
+            Label:
+                id: _proj_file
+                text: root.proj_file
+                font_size: sp(11)
         Button:
             text: 'Save'
             size_hint_x: 0.1
