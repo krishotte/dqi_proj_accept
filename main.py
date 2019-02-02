@@ -15,6 +15,7 @@ from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 import copy
+from pyexcel_xlsx import save_data
 
 files = ['project_view.kv', 'item_view.kv', 'manage_view.kv']
 for file in files:
@@ -252,6 +253,7 @@ class ProjectContainer(BoxLayout):
         self.add_widget(self.project_recycle_view)
         self.proj_name = ''  # ''Sample project'
         self.data_dir = configuration['data_dir']
+        self.report_dir = configuration['report_dir']
         self.ini = Ini2()
         # self.load_newest_file()
 
@@ -307,6 +309,24 @@ class ProjectContainer(BoxLayout):
 
     def reset_project_view(self):
         self.project_recycle_view.reset_all_data()
+
+    def create_report(self):
+        self.report_file_name = self.proj_file[0:-5] + '.xlsx'
+        print('creating report...', self.report_file_name)
+        sheet = []
+        for each in self.project_recycle_view.data:
+            try:
+                sheet.append([each['id1'], each['name1'], each['status'], each['notes']])
+            except KeyError:
+                sheet.append([each['id1'], each['name1']])
+        data_to_save = {'sheet1': sheet}
+        if not path.isfile(path.join(self.report_dir, self.report_file_name)):
+            save_data(path.join(self.report_dir, self.report_file_name), data_to_save)
+            print('xlsx saved')
+        else:
+            print('file already exists')
+            a1.main_container.popup_message.message = 'file ' + self.report_file_name + ' already exists'
+            a1.main_container.popup_message.open()
 
 
 class ManageRecycleView(RecycleView):
@@ -399,6 +419,10 @@ class CreateProjectPopup(Popup):
         self.dismiss()
 
 
+class Notifier(Popup):
+    message = StringProperty()
+
+
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
     """
@@ -456,15 +480,21 @@ class MainContainer(RelativeLayout):
         '''
         super().__init__()
         self.data_dir = path.join(config_dir, 'data')
+        self.report_dir = path.join(config_dir, 'report')
         self.configuration = self.read_config_file(config_dir)
         self.configuration['config_dir'] = config_dir
         self.configuration['data_dir'] = self.data_dir
+        self.configuration['report_dir'] = self.report_dir
 
         if not path.isdir(self.data_dir):
-            print('directory does not exist, creating')
+            print('data directory does not exist, creating')
             mkdir(self.data_dir)
+        if not path.isdir(self.report_dir):
+            print('report directory does not exist, creating')
+            mkdir(self.report_dir)
         self.project_container = ProjectContainer(self.configuration)
         self.project_manager = ProjectManager(self.data_dir)
+        self.popup_message = Notifier()
         # self.add_widget(self.project_container)
         self.add_widget(self.project_manager)
 

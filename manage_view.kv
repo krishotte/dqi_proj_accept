@@ -63,4 +63,15 @@
                 on_release: root._cancel()
         Label:
             size_hint_y: 0.8
+
+<Notifier>:
+    title: 'Message'
+    on_touch_down: self.dismiss()
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: root.message
+            size_hint_y: 0.1
+        Label:
+            size_hint_y: 0.9
         
