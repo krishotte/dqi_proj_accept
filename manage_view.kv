@@ -1,4 +1,5 @@
 #:kivy 1.10.1
+#:import Clock kivy.clock.Clock
 #view for managing projects in app
 <ProjectManager>:
     orientation: 'vertical'
@@ -67,6 +68,7 @@
 <Notifier>:
     title: 'Message'
     on_touch_down: self.dismiss()
+    on_open: Clock.schedule_once(self.close, self.auto_close_timeout)
     BoxLayout:
         orientation: 'vertical'
         Label:

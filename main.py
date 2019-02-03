@@ -4,7 +4,7 @@ from os import path, listdir, mkdir
 from kivy.app import App
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import StringProperty, ObjectProperty, ListProperty, BooleanProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty, BooleanProperty, NumericProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 import load_template
 from kivy.uix.recycleview.views import RecycleDataAdapter
@@ -33,7 +33,7 @@ print('color definition: ', color_picker)
 
 # TODO: add app ini file:
 #       - internal/external template file - OK
-#       - data, export folder
+#       - data, export folder - OK
 
 
 class ItemBasicNA(RecycleDataViewBehavior, BoxLayout):
@@ -313,7 +313,7 @@ class ProjectContainer(BoxLayout):
     def create_report(self):
         self.report_file_name = self.proj_file[0:-5] + '.xlsx'
         print('creating report...', self.report_file_name)
-        sheet = []
+        sheet = []  # list (sheet) of lists (lines) of records (columns)
         for each in self.project_recycle_view.data:
             try:
                 sheet.append([each['id1'], each['name1'], each['status'], each['notes']])
@@ -325,8 +325,7 @@ class ProjectContainer(BoxLayout):
             print('xlsx saved')
         else:
             print('file already exists')
-            a1.main_container.popup_message.message = 'file ' + self.report_file_name + ' already exists'
-            a1.main_container.popup_message.open()
+            a1.main_container.popup_message.show_message('file ' + self.report_file_name + ' already exists')
 
 
 class ManageRecycleView(RecycleView):
@@ -402,7 +401,7 @@ class ProjectManager(BoxLayout):
 class CreateProjectPopup(Popup):
     """
     popup window for project name creation
-    TODO: error on wrong file name
+    TODO: error notification on wrong file name - OK
     """
     new_project_name = ObjectProperty()
 
@@ -413,6 +412,8 @@ class CreateProjectPopup(Popup):
         print('creation response: ', response)
         if response:
             self.dismiss()
+        else:
+            a1.main_container.popup_message.show_message('project already exists, or name is empty')
 
     def _cancel(self):
         print('popup Cancel pressed')
@@ -421,6 +422,18 @@ class CreateProjectPopup(Popup):
 
 class Notifier(Popup):
     message = StringProperty()
+    auto_close_timeout = NumericProperty()
+
+    def __init__(self, timeout):
+        super().__init__()
+        self.auto_close_timeout = timeout
+
+    def show_message(self, message):
+        self.message = message
+        self.open()
+
+    def close(self, dt):
+        self.dismiss()
 
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
@@ -473,6 +486,8 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 class MainContainer(RelativeLayout):
     """
     holds all app widgets
+    TODO: default values for configuration directory - OK
+    TODO: create conf.json with default config if it does not exist
     """
     def __init__(self, config_dir):
         '''
@@ -481,10 +496,18 @@ class MainContainer(RelativeLayout):
         super().__init__()
         self.data_dir = path.join(config_dir, 'data')
         self.report_dir = path.join(config_dir, 'report')
-        self.configuration = self.read_config_file(config_dir)
-        self.configuration['config_dir'] = config_dir
-        self.configuration['data_dir'] = self.data_dir
-        self.configuration['report_dir'] = self.report_dir
+
+        default_config = {
+            'internal_template': True,
+            'external_template_path': '',
+            'auto_close_timeout': 2,
+            'config_dir': config_dir,
+            'data_dir': self.data_dir,
+            'report_dir': self.report_dir,
+        }
+
+        loaded_config = self.read_config_file(config_dir)
+        self.configuration = {**default_config, **loaded_config}  # merge dictionaries
 
         if not path.isdir(self.data_dir):
             print('data directory does not exist, creating')
@@ -494,7 +517,7 @@ class MainContainer(RelativeLayout):
             mkdir(self.report_dir)
         self.project_container = ProjectContainer(self.configuration)
         self.project_manager = ProjectManager(self.data_dir)
-        self.popup_message = Notifier()
+        self.popup_message = Notifier(self.configuration['auto_close_timeout'])
         # self.add_widget(self.project_container)
         self.add_widget(self.project_manager)
 
