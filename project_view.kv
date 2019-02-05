@@ -58,7 +58,14 @@
         halign: 'left'
         valign: 'middle'
         text: root.name1 #'name'
-        
+
+<ItemSectionTitleWButton>:
+    orientation: 'horizontal'
+    Button:
+        text: 'Add'
+        size_hint_x: 0.1
+        on_release: root.add_item()
+
 <ProjectRecycleView>:
     viewclass: 'ItemBasicNA'
     RecycleBoxLayout:

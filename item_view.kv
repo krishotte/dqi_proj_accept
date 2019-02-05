@@ -5,18 +5,23 @@
     orientation: 'vertical'
     notes: _notes
     tbtn: _tbtn
+    id_name: _id_name
     BoxLayout:
         id: _item
         orientation: 'horizontal'
         size_hint_y: 0.1
-        Label:
-            id: _item_id
-            text: root.id1
-            size_hint_x: 0.2
-        Label:
-            id: _item_name
-            text: root.name1  # 'Item name'
-            size_hint_x: 0.6
+        BoxLayout:
+            id: _id_name
+            orientation: 'horizontal'
+            size_hint_x: 0.8
+            Label:
+                id: _item_id
+                text: root.id1
+                size_hint_x: 0.25
+            #Label:
+            #    id: _item_name
+            #    text: root.name1  # 'Item name'
+            #    size_hint_x: 0.75
         Button:
             text: 'Confirm'
             size_hint_x: 0.1

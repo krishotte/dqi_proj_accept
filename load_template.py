@@ -59,7 +59,9 @@ def get_data(lines):
 
         # TODO: vcls selection based on flags, not id1 length
 
-        if len(id1) < 6:
+        if id1 == '2.12.':
+            vcls = 'ItemSectionTitleWButton'
+        elif len(id1) < 6:
             vcls = 'ItemSectionTitle'
         else:
             vcls = 'ItemBasicNA'

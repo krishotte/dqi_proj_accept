@@ -16,6 +16,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 import copy
 from pyexcel_xlsx import save_data
+from kivy.uix.textinput import TextInput
 
 files = ['project_view.kv', 'item_view.kv', 'manage_view.kv']
 for file in files:
@@ -31,7 +32,7 @@ black = [0, 0, 0, 1]
 color_picker = {'OK': darkgreen, 'NOK': darkred, 'N/A': black, 'None': black}
 print('color definition: ', color_picker)
 
-# TODO: add app ini file:
+# TODO_: add app ini file:
 #       - internal/external template file - OK
 #       - data, export folder - OK
 
@@ -73,6 +74,19 @@ class ItemSectionTitle(RecycleDataViewBehavior, BoxLayout):
         self.background_color = paleblue
         super().__init__()
 
+    def refresh_view_attrs(self, rv, index, data):
+        self.index = index
+        return super().refresh_view_attrs(rv, index, data)
+
+
+class ItemSectionTitleWButton(ItemSectionTitle):
+    """
+    section title with add button
+    TODO_: dynamically generate id1 - next available number - OK, in ProjectRecycleView
+    """
+    def add_item(self):
+        a1.main_container.project_container.project_recycle_view.add_item(self.index)
+
 
 class ViewItem(BoxLayout):
     """
@@ -82,6 +96,8 @@ class ViewItem(BoxLayout):
     tbtn = ObjectProperty()
     id1 = StringProperty()
     name1 = StringProperty()
+    id_name = ObjectProperty()  # BoxLayout holding id and name
+    item_name = ObjectProperty()  # Item name - Label or TextInput
 
     def __init__(self, data_item, index):
         '''
@@ -90,6 +106,8 @@ class ViewItem(BoxLayout):
         :param index: index to generate view
         '''
         super().__init__()
+
+        # collects data to update widget for edit
         self.id1 = data_item['id1']
         self.name1 = data_item['name1']
         try:
@@ -100,6 +118,15 @@ class ViewItem(BoxLayout):
             self.status = data_item['status']
         except KeyError:
             self.status = 'None'
+
+        if data_item['flag1'] == 'editable-name':
+            self._name = TextInput(text=self.name1)  #, id='_item_name')
+        else:
+            self._name = Label(text=self.name1)  # , id='_item_name')
+        self.item_name = self._name
+
+        # dynamically adds Label or TextInput widget to id_name BoxLayout
+        self.id_name.add_widget(self._name)
 
         _toggle_buttons = self.tbtn.get_widgets('_group')
         for each in _toggle_buttons:
@@ -131,9 +158,10 @@ class ViewItem(BoxLayout):
         else:
             _note = 'note'
 
+        # TODO: self.name1 is not updated after change of TextInput
         _output_dict = dict(status=_pressed_button, notes=self.notes.text, status_color=color_picker[_pressed_button],
-                            note=_note)
-        # print('output_dict: ', _output_dict)
+                            note=_note, name1=self.item_name.text)
+        print('output_dict: ', _output_dict)
         a1.main_container.project_container.project_recycle_view.update_data(self.data_index, _output_dict)
         a1.main_container.display_project_recycle_view()
 
@@ -192,7 +220,7 @@ class MyRDA(RecycleDataAdapter):
 class ProjectRecycleView(RecycleView):
     """
     displays single project all items
-    TODO: add items to the end of the list - by button
+    TODO_: add items to the end of the list - by button - OK
     TODO: add section for issues on our side with dynamic add item functionality
     """
     def __init__(self, configuration, **kwargs):
@@ -238,6 +266,28 @@ class ProjectRecycleView(RecycleView):
         # not needed: self.refresh_from_data()
         # for i in range(8):
         #     print('   index: ', i, 'status: ', self.data[i]['status'], ' template: ', self.template_data1[i]['status'])
+
+    def add_item(self, caller_id):
+        """
+        adds editable item to the end of the list,
+        its id is based on caller id
+        :param caller_id:
+        :return:
+        """
+        ids_in_group = []
+        for each in self.data:
+            if self.data[caller_id]['id1'] in each['id1']:
+                ids_in_group.append(each['id1'])
+        single_data = {
+            'id1': '2.12.' + str(len(ids_in_group)),
+            'name1': '',
+            'flag1': 'editable-name',
+            'viewclass': 'ItemBasicNA',  # 'Item3'
+            'status_color': black,
+            'status': '--',
+            'note': '--',
+        }
+        self.data.append(single_data)
 
 
 class ProjectContainer(BoxLayout):
@@ -401,7 +451,7 @@ class ProjectManager(BoxLayout):
 class CreateProjectPopup(Popup):
     """
     popup window for project name creation
-    TODO: error notification on wrong file name - OK
+    TODO_: error notification on wrong file name - OK
     """
     new_project_name = ObjectProperty()
 
@@ -486,7 +536,7 @@ class SelectableLabel(RecycleDataViewBehavior, Label):
 class MainContainer(RelativeLayout):
     """
     holds all app widgets
-    TODO: default values for configuration directory - OK
+    TODO_: default values for configuration directory - OK
     TODO: create conf.json with default config if it does not exist
     """
     def __init__(self, config_dir):
