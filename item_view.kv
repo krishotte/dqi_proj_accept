@@ -22,12 +22,15 @@
             #    id: _item_name
             #    text: root.name1  # 'Item name'
             #    size_hint_x: 0.75
+            #    text_size: self.size
+            #    halign: 'left'
+            #    valign: 'middle'
         Button:
-            text: 'Confirm'
+            text: 'OK'  # 'Confirm'
             size_hint_x: 0.1
             on_release: root.confirm()
         Button:
-            text: 'Cancel'
+            text: 'X'  # 'Cancel'
             size_hint_x: 0.1
             on_release: root.cancel()
     BoxLayout:
@@ -50,3 +53,11 @@
     Label:
         text: ''
         size_hint_y: 0.5
+
+<ItemName>:
+    id: _item_name
+    #text: self.item_name
+    size_hint_x: 0.75
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'

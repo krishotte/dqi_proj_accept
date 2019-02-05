@@ -15,7 +15,11 @@ from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 import copy
-from pyexcel_xlsx import save_data
+try:
+    from pyexcel_xlsx import save_data
+    pyexcel_imported = True
+except:
+    pyexcel_imported = False
 from kivy.uix.textinput import TextInput
 
 files = ['project_view.kv', 'item_view.kv', 'manage_view.kv']
@@ -88,6 +92,10 @@ class ItemSectionTitleWButton(ItemSectionTitle):
         a1.main_container.project_container.project_recycle_view.add_item(self.index)
 
 
+class ItemName(Label):
+    pass
+
+
 class ViewItem(BoxLayout):
     """
     widget for single item editing
@@ -120,9 +128,9 @@ class ViewItem(BoxLayout):
             self.status = 'None'
 
         if data_item['flag1'] == 'editable-name':
-            self._name = TextInput(text=self.name1)  #, id='_item_name')
+            self._name = TextInput(text=self.name1)  # , id='_item_name')
         else:
-            self._name = Label(text=self.name1)  # , id='_item_name')
+            self._name = ItemName(text=self.name1)  # Label(text=self.name1)  # , id='_item_name')
         self.item_name = self._name
 
         # dynamically adds Label or TextInput widget to id_name BoxLayout
@@ -313,6 +321,7 @@ class ProjectContainer(BoxLayout):
         uses 'self.proj_name'_xxxx.json name
         xxxx next available number
         :return:
+        TODO: bug - suffix is based on array length, not last saved version
         """
         print('saving project...')
         self._check_saved_files()
@@ -361,21 +370,22 @@ class ProjectContainer(BoxLayout):
         self.project_recycle_view.reset_all_data()
 
     def create_report(self):
-        self.report_file_name = self.proj_file[0:-5] + '.xlsx'
-        print('creating report...', self.report_file_name)
-        sheet = []  # list (sheet) of lists (lines) of records (columns)
-        for each in self.project_recycle_view.data:
-            try:
-                sheet.append([each['id1'], each['name1'], each['status'], each['notes']])
-            except KeyError:
-                sheet.append([each['id1'], each['name1']])
-        data_to_save = {'sheet1': sheet}
-        if not path.isfile(path.join(self.report_dir, self.report_file_name)):
-            save_data(path.join(self.report_dir, self.report_file_name), data_to_save)
-            print('xlsx saved')
-        else:
-            print('file already exists')
-            a1.main_container.popup_message.show_message('file ' + self.report_file_name + ' already exists')
+        if pyexcel_imported:
+            self.report_file_name = self.proj_file[0:-5] + '.xlsx'
+            print('creating report...', self.report_file_name)
+            sheet = []  # list (sheet) of lists (lines) of records (columns)
+            for each in self.project_recycle_view.data:
+                try:
+                    sheet.append([each['id1'], each['name1'], each['status'], each['notes']])
+                except KeyError:
+                    sheet.append([each['id1'], each['name1']])
+            data_to_save = {'sheet1': sheet}
+            if not path.isfile(path.join(self.report_dir, self.report_file_name)):
+                save_data(path.join(self.report_dir, self.report_file_name), data_to_save)
+                print('xlsx saved')
+            else:
+                print('file already exists')
+                a1.main_container.popup_message.show_message('file ' + self.report_file_name + ' already exists')
 
 
 class ManageRecycleView(RecycleView):
