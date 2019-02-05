@@ -537,13 +537,15 @@ class MainContainer(RelativeLayout):
     """
     holds all app widgets
     TODO_: default values for configuration directory - OK
-    TODO: create conf.json with default config if it does not exist
+    TODO_: create conf.json with default config if it does not exist
+    TODO: data_dir, report_dir creation fix
     """
     def __init__(self, config_dir):
         '''
         container widget holding all subwidgets
         '''
         super().__init__()
+        self.ini_cls = Ini2()
         self.data_dir = path.join(config_dir, 'data')
         self.report_dir = path.join(config_dir, 'report')
 
@@ -557,6 +559,10 @@ class MainContainer(RelativeLayout):
         }
 
         loaded_config = self.read_config_file(config_dir)
+        if not loaded_config:
+            self.ini_cls.write(path.join(config_dir, 'conf.json'), default_config)
+            print('writing default config into conf.json')
+
         self.configuration = {**default_config, **loaded_config}  # merge dictionaries
 
         if not path.isdir(self.data_dir):
@@ -590,8 +596,7 @@ class MainContainer(RelativeLayout):
         self.add_widget(self.project_manager)
 
     def read_config_file(self, config_dir):
-        ini_cls = Ini2()
-        configuration = ini_cls.read(path.join(config_dir, 'conf.json'))
+        configuration = self.ini_cls.read(path.join(config_dir, 'conf.json'))
         print('read configuration: ', configuration)
         return configuration
 
