@@ -321,11 +321,12 @@ class ProjectContainer(BoxLayout):
         uses 'self.proj_name'_xxxx.json name
         xxxx next available number
         :return:
-        TODO: bug - suffix is based on array length, not last saved version
+        TODO_: bug - suffix is based on array length, not last saved version - OK
         """
         print('saving project...')
         self._check_saved_files()
-        suffix = str(len(self.matched_saves)).zfill(4)
+        # suffix = str(len(self.matched_saves)).zfill(4)
+        suffix = str(int(self.matched_saves[-1].split('_')[-1].split('.')[0])+1).zfill(4)
         filename = self.proj_name + '_' + suffix + '.json'
         print('filename used: ', filename)
         self.ini.write(path.join(self.data_dir, filename), self.project_recycle_view.data)
