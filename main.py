@@ -326,7 +326,10 @@ class ProjectContainer(BoxLayout):
         print('saving project...')
         self._check_saved_files()
         # suffix = str(len(self.matched_saves)).zfill(4)
-        suffix = str(int(self.matched_saves[-1].split('_')[-1].split('.')[0])+1).zfill(4)
+        try:
+            suffix = str(int(self.matched_saves[-1].split('_')[-1].split('.')[0])+1).zfill(4)
+        except IndexError:
+            suffix = '0000'
         filename = self.proj_name + '_' + suffix + '.json'
         print('filename used: ', filename)
         self.ini.write(path.join(self.data_dir, filename), self.project_recycle_view.data)
@@ -348,8 +351,8 @@ class ProjectContainer(BoxLayout):
                 matched_saves.append(item)
         projects = set(filename_prefixes)
         print('projects: ', projects)
-        print('found files: ', matched_saves)
-        self.matched_saves = matched_saves
+        print('found files: ', sorted(matched_saves))
+        self.matched_saves = sorted(matched_saves)
         self.saved_projects = projects
 
     def load_newest_file(self):
@@ -557,24 +560,26 @@ class MainContainer(RelativeLayout):
         '''
         super().__init__()
         self.ini_cls = Ini2()
-        self.data_dir = path.join(config_dir, 'data')
-        self.report_dir = path.join(config_dir, 'report')
 
         default_config = {
             'internal_template': True,
             'external_template_path': '',
             'auto_close_timeout': 2,
             'config_dir': config_dir,
-            'data_dir': self.data_dir,
-            'report_dir': self.report_dir,
+            'data_dir': path.join(config_dir, 'data'),
+            'report_dir': path.join(config_dir, 'report'),
         }
 
         loaded_config = self.read_config_file(config_dir)
+
         if not loaded_config:
             self.ini_cls.write(path.join(config_dir, 'conf.json'), default_config)
             print('writing default config into conf.json')
 
         self.configuration = {**default_config, **loaded_config}  # merge dictionaries
+
+        self.data_dir = self.configuration['data_dir']
+        self.report_dir = self.configuration['report_dir']
 
         if not path.isdir(self.data_dir):
             print('data directory does not exist, creating')
