@@ -21,6 +21,7 @@ try:
 except:
     pyexcel_imported = False
 from kivy.uix.textinput import TextInput
+from kivy.utils import platform
 
 files = ['project_view.kv', 'item_view.kv', 'manage_view.kv']
 for file in files:
@@ -551,8 +552,8 @@ class MainContainer(RelativeLayout):
     """
     holds all app widgets
     TODO_: default values for configuration directory - OK
-    TODO_: create conf.json with default config if it does not exist
-    TODO: data_dir, report_dir creation fix
+    TODO_: create conf.json with default config if it does not exist - OK
+    TODO_: data_dir, report_dir creation fix - OK
     """
     def __init__(self, config_dir):
         '''
@@ -620,7 +621,19 @@ class MainContainer(RelativeLayout):
 class Dqi_Proj_Accept(App):
     def __init__(self):
         super().__init__()
-        self.main_container = MainContainer(self.user_data_dir)
+        print('--------------')
+        # overrides default kivy 1.11 user_data_dir creation strategy
+        # which creates data_dir in /data folder
+        if platform == 'android':
+            data_dir = path.join('/sdcard', self.name)
+        else:
+            data_dir = self.user_data_dir
+        if not path.exists(data_dir):
+            print('creating dir: ', data_dir)
+            mkdir(data_dir)
+        print('using data_dir: ', data_dir)
+        self.main_container = MainContainer(data_dir)
+        # self.main_container = MainContainer(self.user_data_dir)
 
     def build(self):
         # self.main_container = MainContainer(self.user_data_dir)
